@@ -358,3 +358,182 @@ Bit about ones that don't
 
 ## Code Patterns
 
+
+# HTML/CSS
+For HTML markup we follow mdo's Code Guide: http://mdo.github.io/code-guide/
+
+CSS Styleguide: https://github.com/gocardless/styleguide/tree/master/css
+
+Angular JS directives or any logic hooks in HTML should be put last in attributes:
+
+```html
+<!-- Avoid -->
+<div gc-popover class="popover">
+...
+</div>
+
+<!-- Recommended -->
+<div class="popover" gc-popover>
+...
+</div>
+```
+
+Why: Behaviour logic is easier to spot and change.
+
+# One-time binding
+When the template is only rendered once after fetching the data used, i.e. no real time
+updates always use the one-time binding syntax.
+
+Requires Angular 1.3.
+
+```html
+<!-- Avoid -->
+<p>Name: {{name}}</p>
+
+<!-- Recommended -->
+<p>Name: {{::name}}</p>
+```
+
+Why: Avoids unecessary and potentially expensive `$watch`ers.
+
+# Angular abstractions
+
+Use:
+- `$timeout` instead of `setTimeout`
+- `$interval` instead of `setInterval`
+- `$window` instead of `window`
+- `$document` instead of `document`
+- `$http` instead of `$.ajax`
+- `$q` (promises) instead of callbacks
+
+This makes your tests easier to follow and faster to run as they can be executed 
+synchronously.
+
+# Modules
+Single module per file. Map ES6 modules 1 to 1.
+
+```js
+// Avoid
+angular.module('app').controller()
+
+// Recommended
+angular.module('gc.home', []).controller()
+```
+
+## Dependencies
+Modules should reference other modules using the Angular Module's "name" property
+
+```js
+// Avoid
+angular.module('gc.services.http', [
+  'gc.services.cache'
+]);
+
+// Recommended
+import CacheService from `../services/cache-service';
+
+angular.module('gc.services.http', [
+  CacheService.name
+]);
+```
+
+Why? Using a property of my.submoduleA prevents Closure presubmit failures complaining that the file is required but never used. Using the .name property avoids duplicating strings.
+
+Source: 
+- https://google-styleguide.googlecode.com/svn/trunk/angularjs-google-style.html
+
+When resolving dependencies through the DI mechanism of AngularJS, sort the dependencies by their type - the built-in AngularJS dependencies should be first, followed by your custom ones:
+
+```js
+module.factory('Service', function ($rootScope, $timeout, MyCustomDependency1, MyCustomDependency2) {
+  return {
+    //Something
+  };
+});
+```
+
+## Naming
+Always lowercase, add custom prefix. Namespaced using dots
+
+```js
+angular.module('gc.services.http', []);
+```
+
+# Directives
+
+Restrict to either Elements and Attributes:
+- When the directive has template always use a element directive
+- When the directive adds behaviour like showing and hiding use attribute directive
+- Never use both, or never use a class as this is used for styling
+
+```html
+<!-- Avoid -->
+<div class="calendar"></div>
+<!-- directive: calendar -->
+
+<!-- Recommended -->
+<date-time-calendar></date-time-calendar>
+<div prevent-default-event="click"></div>
+```
+
+Why?: It becomes easier to spot what a directive does, and also what is a directive (i.e. ui behaviour). Having classes  only used for styling makes it harder to break behaviour.
+
+# General best practices
+
+XXX Split me up
+
+* **Namespace modules**  
+  Prefixing all modules (`gc-`)
+  * The `ng-` is reserved for core directives.
+  * Purpose-namespacing (`i18n-` or `geo-`) is better than owner-namespacing (`djs-` or `igor-`)
+* **Only use `.$broadcast()`, `.$emit()` and `.$on()` for atomic events**  
+  Events that are relevant globally across the entire app (such as a user authenticating or the app closing). If you want events specific to modules, services or widgets you should consider Services, Directive Controllers, or 3rd Party Libs
+  * `$scope.$watch()` should replace the need for events
+  * Injecting services and calling methods directly is also useful for direct communication
+  * Directives are able to directly communicate with each other through directive-controllers
+* **Always let users use expressions whenever possible**  
+  * `ng-href` and `ng-src` are plaintext attributes that support `{{}}`
+  * Use `$attrs.$observe()` since expressions are _async_ and could change
+* **Extend directives by using Directive Controllers**  
+  You can place methods and properties into a directive-controller, and access that same controller from other directives. You can even override methods and properties through this relationship
+* **Add teardown code to controllers and directives**  
+  Controller and directives emit an event right before they are destroyed. This is where you are given the opportunity to tear down your plugins and listeners and pretty much perform garbage collection.
+  * Subscribe to the `$scope.$on('$destroy', ...)` event
+* **Leverage modules _properly_**  
+  Instead of slicing your app across horizontals that can't be broken up, group your code into related bundles. This way if you remove a module, your app still works.
+  * `app.controllers`, `app.services`, etc will break your app if you remove a module
+  * `app.users`, `app.users.edit`, `app.users.admin`, `app.projects`, etc allows you to group and nest related components together and create loose coupling
+  * Spread route definitions across multiple module `.config()` methods
+  * Modules can have their own dependencies (including external)
+  * **Folder structure _should_ reflect module structure**
+
+Source:
+- https://google-styleguide.googlecode.com/svn/trunk/angularjs-google-style.html
+
+# Anti patterns
+
+- Don't wrap element inside of $(). All AngularJS elements are already jq-objects
+- Don't do if (!$scope.$$phase) $scope.$apply(), it means your $scope.$apply() isn't high enough in the call stack.
+- Don't use jQuery to generate templates or DOM
+- Do not manipulate DOM in your controllers, this will make your controllers harder for testing and will violate the Separation of Concerns principle. Use directives instead.
+- Don’t use `ngInit` - prefer the usage of controllers instead.
+- Don't use globals. Resolve all dependencies using Dependency Injection.
+- Do not pollute your $scope. Only add functions and variables that are being used in the templates.
+
+## Reserve $ for Angular properties and services
+
+```js
+// Avoid
+$scope.$myModel = { value: 'foo' }
+$scope.myModel = { $value: 'foo' }
+myModule.service('$myService', function() { ... });
+var MyCtrl = function($http) {this.$http_ = $http;}; 
+
+// Recommended
+$scope.myModel = { value: 'foo' }
+myModule.service('myService', function() { /*...*/ });
+var MyCtrl = function($http) {this.http_ = $http;};
+```
+
+Sources: 
+- https://github.com/angular/angular.js/wiki/Anti-Patterns
