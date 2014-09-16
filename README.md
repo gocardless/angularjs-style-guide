@@ -1,14 +1,38 @@
 # GoCardless AngularJS Style Guide
 
-Repo: https://github.com/gocardless/gc-angularjs-styleguide (will be made public eventually)
+- https://github.com/angular/angular.js/wiki/Best-Practices
+- http://google-styleguide.googlecode.com/svn/trunk/angularjs-google-style.html
 
-# Definitions
+Further reading:
+- [Cohesion](http://en.wikipedia.org/wiki/Cohesion_(computer_science))
+- [Encapsulation](http://en.wikipedia.org/wiki/Encapsulation_(object-oriented_programming))
+- [Composability](http://en.wikipedia.org/wiki/Composability)
 
-Word definitions..?
 
-# Design principles
+# High Level Rules
+1. Prioritise readability: code is read more than it is written.
+2. Be explicit, not implicit.
+3. Know [when to deviate](http://legacy.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds) from the style guide. 
+4. Composability > inheritance.
 
-General principles (e.g. suit)
+
+
+# Word Definitions
+
+## Helper
+Small, simple, [pure](http://en.wikipedia.org/wiki/Pure_function) pieces of functionality that can be used in views or controllers.
+
+## Service
+Anything that externally fetches or stores data.
+
+## Component
+A component is a reusable piece of UI that contains all the HTML, CSS, and JavaScript required for it to work. This embraces the future of front-end web development using [Web Components](http://webcomponents.org/) and [ES6](https://github.com/nzakas/understandinges6), which [Angular 2.0](http://blog.angularjs.org/2014/03/angular-20.html) is being designed for.
+
+## Routes
+A route is a collection of components and non-reusable pieces of UI routed to a URL. Using the term ‘routes’ instead of ‘pages’ encourages developers to architect web applications as collections of UI pieces, instead of pages as the Internet was originally designed.
+
+**to-do**
+
 
 # Naming files, folders and Angular modules
 
@@ -309,6 +333,16 @@ angular.module('gc.webhooks.index', [
 
 
 ## Services
+
+
+
+### Generic bit about services
+
+
+
+Bit about services that hit our API
+
+Bit about ones that don't
 
 ## API Calls
 
