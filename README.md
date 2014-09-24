@@ -16,7 +16,6 @@ Further reading:
 4. Composability > inheritance.
 
 
-
 # Word Definitions
 
 ## Helper
@@ -29,9 +28,7 @@ Anything that externally fetches or stores data.
 A component is a reusable piece of UI that contains all the HTML, CSS, and JavaScript required for it to work. This embraces the future of front-end web development using [Web Components](http://webcomponents.org/) and [ES6](https://github.com/nzakas/understandinges6), which [Angular 2.0](http://blog.angularjs.org/2014/03/angular-20.html) is being designed for.
 
 ## Routes
-A route is a collection of components and non-reusable pieces of UI routed to a URL. Using the term ‘routes’ instead of ‘pages’ encourages developers to architect web applications as collections of UI pieces, instead of pages as the Internet was originally designed.
-
-**to-do**
+A route is a collection of components and non-reusable pieces of UI bound to a URL. Each route is modelled as a state (using [ui-router](https://github.com/angular-ui/ui-router)). Every URL in your application should work regardless of if it has been navigated to or if it has been hit directly from a page fresh. Modelling pages as states tied to URLs and using UI Router makes this easy to do.
 
 
 # Naming files, folders and Angular modules
@@ -51,97 +48,21 @@ Every concern/single responsibility is self contained within its own folder.
   /helpers/spec/e2e
 ```
 
-Filenames are lowercase with dashes in place of spaces. Function name is camel
 
-Angular modules are prefixed with `gc.`
+## Embrace Angular's module and dependency system
 
-```js
-// routes
-gc.routes.home.index
-gc.routes.home.show
-
-Top level folders: routes, config, constants, components, services, helpers
-
-Routes: index, show, create, update
-
-Dot name spaces:
-    - route, config, constant, component, service, helper
-    - controller, template
-
-gc.routes.home.index
-
-    /routes
-        /home
-            /index
-                /home-index.route.js (gc.routes.home.index, HomeIndexRoute)
-                /home-index.controller.js (gc.routes.home.index.controller, HomeIndexController)
-                /home-index.template.html
-
-// config
-gc.config.locationProvider
-
-    /config
-        /location-provider
-            /location-provider.config.js
-
-// constants
-gc.constants.api
-
-    /constants
-        /api
-            /api.constant.js
-
-// components
-gc.components.dialog
-
-    /components
-        /dialog
-            /dialog.component.js (gc.components.dialog, Dialog, gcDialog)
-            /dialog.controller.js
-            /dialog.template.html
-
-// services
-gc.services.users
-
-    /services
-        /users
-            /users.service.js (gc.services.users, UsersService)
-
-// helpers
-gc.helpers.currencyFromPence
-
-    /helpers
-        /currency-from-pence
-            currency-from-pence.helper.js (gc.helpers.currencyFromPence, CurrencyFromPenceHelper)
-        /currency-from-pence-filter
-            currency-from-pence-filter.helper.js (gc.helpers.currencyFromPence, CurrencyFromPenceHelper)
-```
-
-## Angular Modules
-
-Rather than have one module for our application and attach all components, we keep every component in its own module. For example, the home page controller is defined in the `gc.home.index.controller`.
-
-Our main application then depends on the top level modules:
+Rather than have one module for our application and attach all components, each component is kept in its own module. This module is named after the component it contains within, with `Module` on the end. For example, the `OrganisationApiKeysIndexController` is defined in the `OrganisationApiKeysIndexControllerModule`:
 
 ```js
-angular.module('gc.main', [
-    'gc.home',
-    'gc.users',
-    ...
+export var OrganisationApiKeysIndexControllerModule = angular.module('OrganisationApiKeysIndexControllerModule', [
+]).controller('OrganisationApiKeysIndexController', [
+  'apiKeys',
+  'role',
+  function OrganisationApiKeysIndexController(apiKeys, role) {...}
 ]);
 ```
 
-## Routes
-
-A route folder will usually have the following files in:
-
-- home-index-controller.js
-- home-index-controller.spec.js
-- home-index-route.js
-- home-index-template.html
-- home-index.e2e.js
-
-_Why_: we've found because Angular components tend to be isolated, storing all parts of a component in the same folder makes more sense than splitting up the app into folders for controllers, templates, and so on.
+_Why_: keeping every component in its own module makes it easier to test and deal with dependencies. Each component can then depend on the modules it needs, and the dependencies of your app and its components are much more explicit.
 
 ## Constants
 
@@ -150,6 +71,9 @@ _Why_: we've found because Angular components tend to be isolated, storing all p
 ## Services
 
 ## Components
+
+_Why_: we've found because Angular components tend to be isolated, storing all parts of a component in the same folder makes more sense than splitting up the app into folders for controllers, templates, and so on.
+
 
 ## Helpers
 
@@ -480,9 +404,7 @@ Why?: It becomes easier to spot what a directive does, and also what is a direct
 
 # General best practices
 
-XXX Split me up
-
-* **Namespace modules**  
+## Module Namespacing
   Prefixing all modules (`gc-`)
   * The `ng-` is reserved for core directives.
   * Purpose-namespacing (`i18n-` or `geo-`) is better than owner-namespacing (`djs-` or `igor-`)
