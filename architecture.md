@@ -13,13 +13,13 @@ i.e. explicit > implicit
 - Routes
 - Controllers
 - Directives
-- Factories
+- Filter
 
 ## Patterns
-- Other than the core 'Part of Angular'
+- Other than the core 'Parts of Angular'
 
 ## Anti-Patterns
-- Other than the core 'Part of Angular'
+- Other than the core 'Parts of Angular'
 
 ## GoCardless Specific
 - ES6
