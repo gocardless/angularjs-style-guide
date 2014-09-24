@@ -20,18 +20,17 @@ Further reading:
 # Word Definitions
 
 ## Helper
-Small, simple, [pure](http://en.wikipedia.org/wiki/Pure_function) pieces of functionality that can be used in views or controllers.
+Small, simple, [pure](http://en.wikipedia.org/wiki/Pure_function) functions that can be used in views or controllers.
 
 ## Service
-Anything that externally fetches or stores data.
+Anything that externally fetches or stores data. **CHANGE**
 
 ## Component
 A component is a reusable piece of UI that contains all the HTML, CSS, and JavaScript required for it to work. This embraces the future of front-end web development using [Web Components](http://webcomponents.org/) and [ES6](https://github.com/nzakas/understandinges6), which [Angular 2.0](http://blog.angularjs.org/2014/03/angular-20.html) is being designed for.
 
 ## Routes
-A route is a collection of components and non-reusable pieces of UI routed to a URL. Using the term ‘routes’ instead of ‘pages’ encourages developers to architect web applications as collections of UI pieces, instead of pages as the Internet was originally designed.
+A route is a collection of components and non-reusable pieces of UI routed to a URL. Using the term ‘routes’ instead of ‘pages’ encourages developers to architect web applications as compositions of UI pieces rather than pages.
 
-**to-do**
 
 
 # Naming files, folders and Angular modules
@@ -44,16 +43,15 @@ Every concern/single responsibility is self contained within its own folder.
       /about
   /constants
   /config
-  /components/popover (ui web components)
-  /services (interact with anything external)
-  /helpers (filters..)
+  /components
+  /services
+  /helpers
   /helpers/spec/unit
   /helpers/spec/e2e
 ```
 
 Filenames are lowercase with dashes in place of spaces. Function name is camel
 
-Angular modules are prefixed with `gc.`
 
 ```js
 // routes
@@ -176,6 +174,44 @@ Why?: It promotes the use of binding to a "dotted" object in the View (e.g. cust
 Why?: Helps avoid using $parent calls in Views with nested controllers.
 
 Avoid coupling controllers in views, couple controllers to templates in the route or directive.
+
+Instructions: Set `var ctrl = this;` at the top of a controller. At the bottom of the controller, extend `ctrl` to include all properties/methods you want to make available to the template:
+
+```js
+export var ModuleName = angular.module('ModuleName ', [
+  dependency1.name,
+  dependency2.name,
+]).controller('ModuleNameController', [
+  'controllerDependency1',
+  'controllerDependency2',
+  'controllerDependency3',
+  function ModuleNameController(
+    controllerDependency1,
+    controllerDependency2,
+    controllerDependency3,
+  ){
+    var ctrl = this; 
+
+    var funcName1 = function funcName1() {
+      …
+    };
+
+    var funcName2 = function funcName2() {
+      …
+    };
+    
+    _.extend(ctrl, {
+      foo: controllerDependency1.foo,
+      funcName1: funcName1,
+      funcName2: funcName2
+    });
+});
+```
+
+then, in route:
+
+
+
 
 ```html
 <!-- avoid -->
