@@ -11,10 +11,12 @@ i.e. explicit > implicit
 
 ## Parts of Angular
 - Routes
+- Components
 - Controllers
 - Directives
 - Filter
 
+// repeated for each “Part of Angular”
 ## Patterns
 - Other than the core 'Parts of Angular'
 
