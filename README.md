@@ -26,6 +26,17 @@
 
 ---
 
+### Helpers
+[Pure](http://en.wikipedia.org/wiki/Pure_function) functions. For example, `currencyFilter`.
+
+### Components
+Encapsulated DOM components.
+
+### Services
+Business logic.
+
+---
+
 ## Parts of Angular
 
 ### Routes
@@ -66,28 +77,44 @@
     2.2. Separates concerns: data is resolved in the route and used in the controller.
   3. Extend a controller’s properties onto the controller.
   _Why_: What is being exported is clear.
-  4. Abstract business logic into services.
-  _Why_: Simplifies testing and reusability.
+  4. Only extend the controller with properties used in templates.
+  _Why_: Adding unused properties to the digest cycle is expensive.
+  5. Store presentation logic in controllers and business logic in services.
+  _Why_:
+    5.1. Simplifies testing business logic.
+    5.2. Controllers are glue code, and therefore require integration tests not unit tests.
+  6. Only instantiate controllers through routes or directives.
+  _Why_: Allows reuse of controllers and encourages component encapsulation.
 
-### Filters
+### Modules
+
+#### Rules:
+
+  1. Create one module per file and don’t alter a module other than where it is defined.
+  _Why_:
+    1.1. Prevents polluting the global scope.
+    1.2. Simplifies unit testing by declaring all dependencies needed to run each module.
+    1.3. Negates necessity to load files in a specific order.
+
+  2. Use ES6 module system and reference other modules using Angular Module’s `name` property.
+  _Why_:
+    2.1. Encapsulates all required files, making unit testing easier and error feedback more specific.
+    2.2. Simplifies upgrading to Angular 2.0, which uses ES6 modules.
+    
 
 ---
 
 ## Patterns
-- Other than the core 'Parts of Angular'
+- 
 
 ## Anti-Patterns
-- Other than the core 'Parts of Angular'
+- Using the `$` name space in property names.
+- 
 
 ---
 
-## GoCardless Specific
-- ES6
-  - SystemJS
-  - Traceur
-
 ## Further reading
-- Links
+- [Component-based software engineering](http://en.wikipedia.org/wiki/Component-based_software_engineering)
 
 ---
 
