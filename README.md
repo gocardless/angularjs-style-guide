@@ -2,38 +2,83 @@
 
 ## High Level Goals
 
-1. Prioritise readability: code is read more than it is written.
+1. Prioritise readability and clarity.
 2. Be explicit, not implicit.
-3. Know [when to deviate](http://legacy.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds) from the style guide. 
 4. Composability > inheritance.
-5. Embrace the future of web application development – ES6 and Angular 2.0.
+3. Know [when to deviate](http://legacy.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds) from the style guide.
+5. Embrace the future of web application development – ES6 and Web Components (Angular 2.0).
 
 ---
 
 ## Directories & Files
 
-- Rule
-  There are two forms of organising code: components and routes. A component is a reusable piece of UI that contains all the HTML, CSS, and JavaScript required for it to work. A route is a collection of components and non-reusable pieces of UI bound to a URL.
+### Specs (Unit/E2E)
 
-- _Why_:
-- _Caveats_:
-- Code example
-
-- Structure
-  - Modules
-- Naming
-  - '.' convention (.factory, .controller etc.)
-
----
-
-### Helpers
-[Pure](http://en.wikipedia.org/wiki/Pure_function) functions. For example, `currencyFilter`.
+Specs are kept in the same folder as the unit/route being tested.
 
 ### Components
-Encapsulated DOM components.
+
+Encapsulated DOM components. Each component contains all the HTML, CSS and JavaScript, and declares any dependencies needed to render itself.
+
+### Config
+
+Provider configuration. For example `$locationProvider.html5Mode(true);`.
+
+### Constants
+
+For example `export var API = 'https://api.gocardless.com';`.
+
+### Helpers
+
+[Pure](http://en.wikipedia.org/wiki/Pure_function) functions. For example, `currencyFilter`.
+
+### Routes
+
+A view tied to a URL. Each route contains all the HTML, CSS and JavaScript, and declares any service and component dependencies needed to render itself.
 
 ### Services
-Business logic.
+
+Business logic. For example `$http` abstractions.
+
+### Folder structure
+
+```
+/app
+  /components
+    /alert
+      alert.directive.js
+      alert.directive.spec.js
+      alert.template.html
+  /config
+    main.config.js
+  /constants
+    api-url.constant.js
+  /routes
+    /customers
+      /index
+        customers-index.template.html
+        customers-index.route.js
+        customers-index.controller.js
+        customers-index.e2e.js
+  /helpers
+    /currency
+      currency-filter.js
+      currency-filter.spec.js
+    /unit
+    /e2e
+  /services
+    /creditors
+      creditors.js
+      creditors.spec.js
+  bootstrap.js
+  main.js
+/assets
+  /fonts
+  /images
+  /stylesheets
+404.html
+index.html
+```
 
 ---
 
@@ -41,85 +86,695 @@ Business logic.
 
 ### Routes
 
-#### Rules:
-  1. Use resolvers to inject data.
-  _Why_: Insures the page is rendered only when all data is available.
-  2. Use query parameters to store route state. For example, the current `offset` and `limit` when paginating.
-  _Why_: The current view should be represented in the URL.
+1. Use resolvers to inject data.
+_Why_: The page is rendered only when all data is available.
+
+```js
+// Recommended
+$stateProvider.state('customers.show', {
+  url: '/customers/:id',
+  template: template,
+  controller: 'CustomersShowController',
+  controllerAs: 'ctrl',
+  resolve: {
+    customer: [
+      'Customers',
+      '$stateParams',
+      function customerResolver(Customers, $stateParams) {
+        return Customers.findOne({
+          params: { id: $stateParams.id }
+        });
+      }
+    ]
+  }
+});
+
+// Avoid
+// Note: Controller written inline for the example
+$stateProvider.state('customers.show', {
+  url: '/customers/:id',
+  template: template,
+  controllerAs: 'ctrl',
+  controller: [
+    'Customers',
+    '$stateParams',
+    function CustomersShowController(Customers, $stateParams) {
+      var ctrl = this;
+      Customers.findOne({
+        params: { id: $stateParams.id }
+      }).then(function(customers) {
+        ctrl.customers = customers;
+      });
+    }
+  ]
+});
+```
+
+2. Use query parameters to store route state. For example, the current `offset` and `limit` when paginating.
+_Why_: The current view should be represented in the URL.
+
+```js
+// Recommended
+function nextPage() {
+  var currentOffset = parseInt($stateParams.offset, 10) || 0;
+  var limit = parseInt($stateParams.limit, 10) || 10;
+  var nextOffset = currentOffset + limit;
+  Payments.findAll({
+    params: { customers: $stateParams.id, limit: limit, offset: nextOffset }
+  });
+}
+
+// Avoid
+// Keeping route state in memory only
+var currentOffset = 0;
+var limit = 10;
+
+function nextPage() {
+  var nextOffset = currentOffset + limit;
+  currentOffset = nextOffset;
+  Payments.findAll({
+    params: { customers: $stateParams.id, limit: limit, offset: nextOffset }
+  });
+}
+```
+
+---
 
 ### Directives
 
 #### Rules:
-  1. Use element directives when content is injected. Else use attribute directives.
-  _Why_: Separates responsibility: element directives add content, attribute directives add behaviour, and class attributes add style.
-  2. Use an isolate scope for _element_ directives. Use inherited scope for _attribute_ directives.
-  _Why_: Using an isolate scope forces you to expose an API by giving the component all the data it needs, making it reusable and testable. Attribute directives should not have an isolate scope because doing so clobbers the current scope.
-  3. When using isolate-scope properties, always `bindToController`.
-  _Why_:
-    3.1. It explicitly shows what variables are shared via the controller.
-    3.2.
 
-### {Anti-}Patterns
-  - Pattern:
-  - Anti-pattern:
-    - Only reference the present component’s scope
-    - _Why_: Makes components reusable, comp
+1. Use element directives when content is injected. Else use attribute directives.
+_Why_: Separates responsibility: element directives add content, attribute directives add behaviour, and class attributes add style.
+
+```html
+<!-- Recommended -->
+<alert message="Error" />
+<!-- Replaced with: -->
+<div class="alert">
+  <span class="alert__message">Error</span>
+</div>
+
+<!-- Avoid -->
+<p alert message="Error">
+</p>
+<!-- Replaced with: -->
+<p alert message="Error">
+  <div class="alert">
+    <span class="alert__message">Error</span>
+  </div>
+</p>
+```
+
+```html
+<!-- Recommended -->
+<button prevent-default="click">Submit</button>
+
+<!-- Avoid -->
+<prevent-default event="click">Submit</prevent-default>
+```
+
+2. Use an isolate scope for _element_ directives. Use inherited scope for _attribute_ directives.
+_Why_: Using an isolate scope forces you to expose an API by giving the component all the data it needs, making it reusable and testable. Attribute directives should not have an isolate scope because doing so clobbers the current scope.
+
+```js
+// Recommended
+angular.module('AlertListComponentModule', [])
+.directive('alertList', [
+  function alertListDirective() {
+    return {
+      restrict: 'E',
+      scope: {}
+    };
+  }
+]);
+
+// Avoid
+angular.module('AlertListComponentModule', [])
+.directive('alertList', [
+  function alertListDirective() {
+    return {
+      restrict: 'E'
+    };
+  }
+]);
+```
+
+```js
+// Recommended
+angular.module('AlertListComponentModule', [])
+.directive('alertList', [
+  function alertListDirective() {
+    return {
+      restrict: 'A',
+      scope: true
+    };
+  }
+]);
+
+// Avoid
+angular.module('AlertListComponentModule', [])
+.directive('alertList', [
+  function alertListDirective() {
+    return {
+      restrict: 'A'
+    };
+  }
+]);
+```
+
+3. When using isolate-scope properties, always `bindToController`.
+_Why_: It explicitly shows what variables are shared via the controller.
+
+```js
+// Recommended
+angular.module('AlertListComponentModule', [])
+.directive('alertList', [
+  function alertListDirective() {
+    return {
+      restrict: 'E',
+      controller: 'AlertListController',
+      controllerAs: 'ctrl',
+      bindToController: true,
+      template: template,
+      replace: true,
+      scope: {}
+    };
+  }
+]);
+
+// Avoid
+angular.module('AlertListComponentModule', [])
+.directive('alertList', [
+  function alertListDirective() {
+    return {
+      restrict: 'E',
+      controller: 'AlertListController',
+      template: template,
+      replace: true,
+      scope: {}
+    };
+  }
+]);
+```
+
+4. Tear down directives, subscribe to `$scope.$on('$destroy', ...)` to get rid of any event listeners or DOM nodes created outside the directive element.
+_Why_: It avoids memory leaks and duplicate event listeners being bound when the directive is re-created.
+
+```js
+// Recommended
+angular.module('AdminExpandComponentModule', [
+]).directive('adminExpand', [
+  '$window',
+  function adminExpand($window) {
+    return {
+      restrict: 'A',
+      scope: {},
+      link: function adminExpandLink(scope, element) {
+        function expand() {
+          element.addClass('is-expanded');
+        }
+
+        $window.document.addEventListener('click', expand);
+  
+        scope.$on('$destroy', function onAdminExpandDestroy() {
+          $window.document.removeEventListener('click', expand);
+        });
+      }
+    };
+  }
+]);
+
+// Avoid
+angular.module('AdminExpandComponentModule', [
+]).directive('adminExpand', [
+  '$window',
+  function adminExpand($window) {
+    return {
+      restrict: 'A',
+      scope: {},
+      link: function adminExpandLink(scope, element) {
+        function expand() {
+          element.addClass('is-expanded');
+        }
+
+        $window.document.addEventListener('click', expand);
+      }
+    };
+  }
+]);
+```
+
+#### Anti-Patterns
+
+- Don't rely on jQuery selectors. Use directives to target elements instead.
+- Don't use jQuery to generate templates or DOM. Use directive templates instead.
+
+---
 
 ### Controllers
 
 #### Rules:
-  1. Use [`controllerAs`](http://toddmotto.com/digging-into-angulars-controller-as-syntax/) syntax.
-  _Why_:
-    1.1. It explicitly shows what controller a variable belongs to, by writing `{{ ctrl.foo }}` instead of `{{ foo }}`
-  2. Inject ready data instead of loading it in the controller.
-  _Why_:
-    2.1. Simplifies testing with mock data.
-    2.2. Separates concerns: data is resolved in the route and used in the controller.
-  3. Extend a controller’s properties onto the controller.
-  _Why_: What is being exported is clear.
-  4. Only extend the controller with properties used in templates.
-  _Why_: Adding unused properties to the digest cycle is expensive.
-  5. Store presentation logic in controllers and business logic in services.
-  _Why_:
-    5.1. Simplifies testing business logic.
-    5.2. Controllers are glue code, and therefore require integration tests not unit tests.
-  6. Only instantiate controllers through routes or directives.
-  _Why_: Allows reuse of controllers and encourages component encapsulation.
+
+1. Use [`controllerAs`](http://toddmotto.com/digging-into-angulars-controller-as-syntax/) syntax.
+_Why_: It explicitly shows what controller a variable belongs to, by writing `{{ ctrl.foo }}` instead of `{{ foo }}`
+
+```js
+// Recommended
+$stateProvider.state('authRequired.customers.show', {
+  url: '/customers/:id',
+  template: template,
+  controller: 'CustomersShowController',
+  controllerAs: 'ctrl'
+});
+
+// Avoid
+$stateProvider.state('authRequired.customers.show', {
+  url: '/customers/:id',
+  template: template,
+  controller: 'CustomersShowController'
+});
+```
+
+```js
+// Recommended
+angular.module('AlertListComponentModule', [])
+.directive('alertList', [
+  function alertListDirective() {
+    return {
+      restrict: 'E',
+      controller: 'AlertListController',
+      controllerAs: 'ctrl',
+      bindToController: true,
+      template: template,
+      replace: true,
+      scope: {}
+    };
+  }
+]);
+
+// Avoid
+angular.module('AlertListComponentModule', [])
+.directive('alertList', [
+  function alertListDirective() {
+    return {
+      restrict: 'E',
+      controller: 'AlertListController',
+      template: template,
+      replace: true,
+      scope: {}
+    };
+  }
+]);
+```
+
+2. Inject ready data instead of loading it in the controller.
+_Why_:
+  - 2.1. Simplifies testing with mock data.
+  - 2.2. Separates concerns: data is resolved in the route and used in the controller.
+
+```js
+// Recommended
+angular.module('CustomersShowControllerModule', [
+]).controller('CustomersShowController', [
+  'customer', 'payments', 'mandates',
+  function CustomersShowController(customer, payments, mandates){
+    var ctrl = this;
+
+    _.extend(ctrl, {
+      customer: customer,
+      payments: payments,
+      mandates: mandates
+    });
+  }
+]);
+
+// Avoid
+angular.module('CustomersShowControllerModule', [
+]).controller('CustomersShowController', [
+  'Customers', 'Payments', 'Mandates',
+  function CustomersShowController(Customers, Payments, Mandates){
+    var ctrl = this;
+
+    Customers.findOne({
+      params: { id: $stateParams.id }
+    }).then(function(customers) {
+      ctrl.customers = customers;
+    });
+
+    Payments.findAll().then(function(payments) {
+      ctrl.payments = payments;
+    });
+
+    Mandates.findAll().then(function(mandates) {
+      ctrl.mandates = mandates;
+    });
+  }
+]);
+```
+
+3. Extend a controller’s properties onto the controller.
+_Why_: What is being exported is clear.
+
+```js
+// Recommended
+angular.module('OrganisationRolesNewControllerModule', [
+]).controller('OrganisationRolesNewController', [
+  'permissions',
+  function CustomersShowController(permissions){
+    var ctrl = this;
+
+    function setAllPermissions(access) {
+      ctrl.form.permissions.forEach(function(permission) {
+        permission.access = access;
+      });
+    }
+
+    _.extend(ctrl, {
+      permissions: permissions,
+      setAllPermissions: setAllPermissions
+    });
+  }
+]);
+
+// Avoid
+angular.module('OrganisationRolesNewControllerModule', [
+]).controller('OrganisationRolesNewController', [
+  'permissions',
+  function CustomersShowController(permissions){
+    var ctrl = this;
+
+    ctrl.permissions = permissions;
+    
+    ctrl.setAllPermissions = function setAllPermissions(access) {
+      ctrl.form.permissions.forEach(function(permission) {
+        permission.access = access;
+      });
+    }
+  }
+]);
+```
+
+4. Only extend the controller with properties used in templates.
+_Why_: Adding unused properties to the digest cycle is expensive.
+
+```js
+// Recommended
+angular.module('WebhooksIndexControllerModule', [])
+.controller('WebhooksIndexController', [
+  'TestWebhooks', 'AlertList', 'webhooks'
+  function WebhooksIndexController(TestWebhooks, AlertList, webhooks) {
+    var ctrl = this;
+
+    function success() {
+      AlertList.success('Your test webhook has been created and will be sent shortly');
+    }
+
+    function error() {
+      AlertList.error('Failed to send test webhook, please try again');
+    }
+
+    function sendTestWebhook(webhook) {
+      TestWebhooks.create({
+        data: { test_webhooks: webhook }
+      }).then(success, error);
+    }
+
+    _.extend(ctrl, {
+      webhooks: webhooks,
+      sendTestWebhook: sendTestWebhook
+    });
+  }
+]);
+
+// Avoid
+angular.module('WebhooksIndexControllerModule', [])
+.controller('WebhooksIndexController', [
+  'TestWebhooks', 'AlertList', 'webhooks'
+  function WebhooksIndexController(TestWebhooks, AlertList, webhooks) {
+    var ctrl = this;
+
+    function success() {
+      AlertList.success('Your test webhook has been created and will be sent shortly');
+    }
+
+    function error() {
+      AlertList.error('Failed to send test webhook, please try again');
+    }
+
+    function sendTestWebhook(webhook) {
+      TestWebhooks.create({
+        data: { test_webhooks: webhook }
+      }).then(success, error);
+    }
+
+    _.extend(ctrl, {
+      webhooks: webhooks,
+      success: success,
+      error: error,
+      sendTestWebhook: sendTestWebhook
+    });
+  }
+]);
+```
+
+5. Store presentation logic in controllers and business logic in services.
+_Why_:
+  - 5.1. Simplifies testing business logic.
+  - 5.2. Controllers are glue code, and therefore require integration tests not unit tests.
+
+```js
+// Recommended
+
+// Avoid
+
+```
+
+6. Only instantiate controllers through routes or directives.
+_Why_: Allows reuse of controllers and encourages component encapsulation.
+
+```js
+// Recommended
+angular.module('WebhooksControllerModule', [])
+.controller('WebhooksController', [
+  'TestWebhooks',
+  function WebhooksController(TestWebhooks) {
+    var ctrl = this;
+
+    function sendTestWebhook(webhook) {
+      TestWebhooks.create({
+        data: { test_webhooks: webhook }
+      }).then(function() {
+        $state.go('authRequired.organisation.roles.index', null);
+        AlertList.success('Your test webhook has been created and will be sent shortly');
+      });
+    }
+
+    _.extend(ctrl, {
+      sendTestWebhook: sendTestWebhook
+    });
+  }
+]);
+
+// Avoid
+angular.module('WebhooksControllerModule', [])
+.controller('WebhooksController', [
+  '$http',
+  function WebhooksController($http) {
+    var ctrl = this;
+
+    function sendTestWebhook(webhook) {
+      $http({
+        method: 'POST',
+        data: { test_webhooks: webhook },
+        url: '/test_webhooks'
+      });
+    }
+
+    _.extend(ctrl, {
+      sendTestWebhook: sendTestWebhook
+    });
+  }
+]);
+```
+
+#### Anti-Patterns
+
+- Don’t manipulate DOM in your controllers, this will make your controllers harder for testing. Use directives instead.
+
+---
 
 ### Modules
 
 #### Rules:
 
-  1. Create one module per file and don’t alter a module other than where it is defined.
-  _Why_:
-    1.1. Prevents polluting the global scope.
-    1.2. Simplifies unit testing by declaring all dependencies needed to run each module.
-    1.3. Negates necessity to load files in a specific order.
+1. Create one module per file and don’t alter a module other than where it is defined.
+_Why_:
+  - 1.1. Prevents polluting the global scope.
+  - 1.2. Simplifies unit testing by declaring all dependencies needed to run each module.
+  - 1.3. Negates necessity to load files in a specific order.
 
-  2. Use ES6 module system and reference other modules using Angular Module’s `name` property.
-  _Why_:
-    2.1. Encapsulates all required files, making unit testing easier and error feedback more specific.
-    2.2. Simplifies upgrading to Angular 2.0, which uses ES6 modules.
-    
+```js
+// Recommended
+angular.module('UsersPasswordEditControllerModule', [])
+  .controller('UsersPasswordEditController', []);
+
+// Avoid
+angular.module('app')
+  .controller('UsersPasswordEditController', []);
+```
+
+2. Use ES6 module system and reference other modules using Angular Module’s `name` property.
+_Why_:
+  - 2.1. Encapsulates all required files, making unit testing easier and error feedback more specific.
+  - 2.2. Simplifies upgrading to Angular 2.0, which uses ES6 modules.
+
+```js
+// Recommended
+import {PasswordResetTokensModule} from 'app/services/password-reset-tokens/password-reset-tokens';
+import {SessionModule} from 'app/services/session/session';
+import {AlertListModule} from 'app/components/alert-list/alert-list';
+
+export var UsersPasswordEditControllerModule = angular.module('UsersPasswordEditControllerModule', [
+  PasswordResetTokensModule.name,
+  SessionModule.name,
+  AlertListModule.name
+]);
+
+// Avoid
+import {PasswordResetTokensModule} from 'app/services/password-reset-tokens/password-reset-tokens';
+import {SessionModule} from 'app/services/session/session';
+import {AlertListModule} from 'app/components/alert-list/alert-list';
+
+export var UsersPasswordEditControllerModule = angular.module('UsersPasswordEditControllerModule', [
+  'PasswordResetTokensModule',
+  'SessionModule',
+  'AlertListModule'
+]);
+```
+
+3. Use relative imports only when importing from the current directory or any of its children. Use absolute paths when referencing modules in parent directories.
+_Why_: Makes it easier to edit directories.
+
+```js
+// Current directory: app/services/creditors/
+
+// Recommended
+import {API_URL} from 'app/constants/api-url.constant';
+import {AuthInterceptorModule} from 'app/services/auth-interceptor/auth-interceptor';
+import {OrganisationIdInterceptorModule} from 'app/services/organisation-id-interceptor/organisation-id-interceptor';
+
+// Avoid
+import {API_URL} from '../../constants/api-url.constant';
+import {AuthInterceptorModule} from '../services/auth-interceptor/auth-interceptor';
+import {OrganisationIdInterceptorModule} from '../services/organisation-id-interceptor/organisation-id-interceptor';
+```
 
 ---
 
-## Patterns
-- 
+### Templates
 
-## Anti-Patterns
-- Using the `$` name space in property names.
-- 
+1. Use one-time binding syntax when rendered data does not change during use.
+_Why_: Avoids unnecessary and potentially expensive `$watch`ers.
+
+```html
+<!-- Recommended -->
+<p>Name: {{::ctrl.name}}</p>
+
+<!-- Avoid -->
+<p>Name: {{ctrl.name}}</p>
+```
+
+#### Anti-Patterns
+
+- Don’t use `ngInit` - use controllers instead.
+- Don’t use `<div ng-controller="Controller">` syntax. Use directives instead. 
 
 ---
 
-## Further reading
-- [Component-based software engineering](http://en.wikipedia.org/wiki/Component-based_software_engineering)
+## General Patterns and Anti-Patterns
 
----
+### Patterns
 
-# Template
-- Rule
-- Why
-- Caveats
-- Code example
+#### Angular abstractions
+
+Use:
+- `$timeout` instead of `setTimeout`
+- `$interval` instead of `setInterval`
+- `$window` instead of `window`
+- `$document` instead of `document`
+- `$http` instead of `$.ajax`
+- `$q` (promises) instead of callbacks
+
+_Why_: This makes your tests easier to follow and faster to run as they can be executed 
+synchronously.
+
+#### Dependency injection annotations
+
+Always use the array annotation for dependency injection and bootstrap with `strictDi`.
+
+_Why_: No need for additional tooling to guard against minification and `strictDi` throws an
+error if you the array (or `$inject`) syntax is not used.
+
+```js
+// Recommended
+angular.module('CreditorsShowControllerModule', [
+]).controller('CreditorsShowController', [
+  'creditor', 'payments', 'payouts',
+  function CreditorsShowController(creditor, payments, payouts) {
+    var ctrl = this;
+
+    _.extend(ctrl, {
+      creditor: creditor,
+      payments: payments,
+      payouts: payouts
+    });
+  }
+]);
+
+// Avoid
+angular.module('CreditorsShowControllerModule', [
+]).controller('CreditorsShowController',
+  function CreditorsShowController(creditor, payments, payouts) {
+    var ctrl = this;
+
+    _.extend(ctrl, {
+      creditor: creditor,
+      payments: payments,
+      payouts: payouts
+    });
+  });
+```
+
+```js
+// Recommended
+import {MainModule} from './main';
+
+angular.element(document).ready(function() {
+  angular.bootstrap(document.querySelector('[data-main-app]'), [
+    MainModule.name
+  ], {
+    strictDi: true
+  });
+});
+
+// Avoid
+import {MainModule} from './main';
+
+angular.element(document).ready(function() {
+  angular.bootstrap(document.querySelector('[data-main-app]'), [
+    MainModule.name
+  ]);
+});
+```
+
+### Anti-Patterns
+
+1. Don’t use the `$` name space in property names (e.g. `$scope.$isActive = true`).
+_Why_: Separates Angular internals.
+
+2. Don't use globals. Resolve all dependencies using Dependency Injection.
+_Why_: Using DI makes testing and refactoring easier.
+
+3. Don't do `if (!$scope.$$phase) $scope.$apply()`, it means your `$scope.$apply()` isn't high enough in the call stack.
+_Why_: You should `$scope.$apply()` as close to the async event binding as possible.
