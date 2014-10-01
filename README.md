@@ -14,7 +14,7 @@
 
 ### Specs (Unit/E2E)
 
-Keep test specs in the same folder as the code being tested.
+Keep spec files in the same folder as the code being tested.
 
 ### Components
 
@@ -26,11 +26,11 @@ Configures Providers. For example, `$locationProvider.html5Mode(true);`.
 
 ### Constants
 
-[Constant variables](http://en.wikipedia.org/wiki/Constant_(computer_programming)). For example, `export var API = 'https://api.gocardless.com';`.
+[Constant variables](http://en.wikipedia.org/wiki/Constant_(computer_programming)). For example, `export var API = 'https://api.gocardless.com';`. Although JavaScript does not yet support constants, naming a variable in all uppercase is a convention that denotes that the variable should not be mutated.
 
 ### Helpers
 
-[Pure functions](http://en.wikipedia.org/wiki/Pure_function). For example, `currencyFilter`.
+[Pure functions](http://en.wikipedia.org/wiki/Pure_function). For example, a `currencyFilter` might take in a number and format it for a certain currency. Helpers take in some input and return output without having any side effects.
 
 ### Routes
 
@@ -88,7 +88,7 @@ index.html
 
 1. Use resolvers to inject data.
 
-_Why_: The page is rendered only when all data is available.
+_Why_: The page is rendered only when all data is available, which means you don't get any views being rendered without data.
 
 ```js
 // Recommended
@@ -133,7 +133,7 @@ $stateProvider.state('customers.show', {
 
 2. Use query parameters to store route state. For example, the current `offset` and `limit` when paginating.
 
-_Why_: The current view should be accurately reflected in the URL.
+_Why_: The current view should be accurately reflected in the URL, which means any page refresh puts the user back in the exact state they were in.
 
 ```js
 // Recommended
@@ -344,7 +344,7 @@ angular.module('AdminExpandComponentModule', [])
 
 1. Use [`controllerAs`](http://toddmotto.com/digging-into-angulars-controller-as-syntax/) syntax.
 
-_Why_: It explicitly shows what controller a variable belongs to, by writing `{{ ctrl.foo }}` instead of `{{ foo }}`
+_Why_: It explicitly shows what controller a variable belongs to, by writing `{{ ctrl.foo }}` instead of `{{ foo }}`.
 
 ```js
 // Recommended
@@ -443,7 +443,7 @@ angular.module('CustomersShowControllerModule', [])
 
 3. Extend a controller’s properties onto the controller.
 
-_Why_: What is being exported is clear.
+_Why_: What is being exported is clear and always done in one place, at the bottom of the file.
 
 ```js
 // Recommended
@@ -740,8 +740,7 @@ Use:
 - `$http` instead of `$.ajax`
 - `$q` (promises) instead of callbacks
 
-_Why_: This makes tests easier to follow and faster to run as they can be executed 
-synchronously.
+_Why_: This makes tests easier to follow and faster to run as they can be executed synchronously.
 
 #### Dependency injection annotations
 
