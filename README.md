@@ -815,3 +815,15 @@ _Why_: Using DI makes testing and refactoring easier.
 3. Don't do `if (!$scope.$$phase) $scope.$apply()`, it means your `$scope.$apply()` isn't high enough in the call stack.
 
 _Why_: You should `$scope.$apply()` as close to the asynchronous event binding as possible.
+
+## Credits
+
+We referred to lots of resources during the creation of this styleguide, including:
+
+- [Todd Motto's styleguide](https://github.com/toddmotto/angularjs-styleguide)
+- [John Papa's styleguide](https://github.com/johnpapa/angularjs-styleguide)
+- [Minko Gechev's styleguide](https://github.com/mgechev/angularjs-style-guide)
+- [Google AngularJS and Closure styleguide](http://google-styleguide.googlecode.com/svn/trunk/angularjs-google-style.html)
+- [The Angular.js GitHub wiki](https://github.com/angular/angular.js/wiki)
+- [Digging into Angular's "Controller as" syntax, by Todd Motto](http://toddmotto.com/digging-into-angulars-controller-as-syntax/)
+- [Python PEP 8 Styleguide](http://legacy.python.org/dev/peps/pep-0008/)
