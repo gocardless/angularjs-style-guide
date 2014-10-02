@@ -801,7 +801,7 @@ angular.element(document).ready(function() {
 
 _Why_: Makes clear what is an Angular internal.
 
-#### Don't use globals. Resolve all dependencies using Dependency Injection.
+#### Don't use globals. Resolve all dependencies using Dependency Injection.
 
 _Why_: Using DI makes testing and refactoring easier.
 
