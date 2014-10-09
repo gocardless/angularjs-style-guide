@@ -2,13 +2,13 @@
 
 ## Introduction
 
-This style guide addresses four things: High-level Goals; Directory and File Structure; Parts of Angular; and General Patterns and Anti-patterns.
+This style guide addresses four areas: High-level Goals; Directory and File Structure; Parts of Angular; and General Patterns and Anti-patterns.
 
 High-level Goals are those that guide low-level decision making.
 
 Directory and File Structure addresses the way we organise our code and why.
 
-Parts of Angular addresses the core parts of AngularJS — routes, directives, controllers, modules, and templates. For each part we state the patterns we use, demonstrate their implementation, and highlight common patterns and anti-patterns specific to that part.
+Parts of Angular addresses the core parts of AngularJS — routes, directives, controllers, modules, and templates.
 
 General Patterns and Anti-patterns addresses those that do not pertain to a specific part, but instead to the application at large.
 
