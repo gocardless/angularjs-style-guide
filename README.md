@@ -1,10 +1,22 @@
 # Angular Style Guide
 
+## Introduction
+
+This style guide addresses four things: High-level Goals; Directory and File Structure; Parts of Angular; and General Patterns and Anti-patterns.
+
+High-level Goals are those that guide low-level decision making.
+
+Directory and File Structure addresses the way we organise our code and why.
+
+Parts of Angular addresses the core parts of AngularJS — routes, directives, controllers, modules, and templates. For each part we state the patterns we use, demonstrate their implementation, and highlight common patterns and anti-patterns specific to that part.
+
+General Patterns and Anti-patterns addresses those that do not pertain to a specific part, but instead to the application at large.
+
 ## Table of Contents
 1. [High-level Goals](#high-level-goals)
 2. [Directory and File Structure](#directory-and-file-structure)
 3. [Parts of Angular](#parts-of-angular)
-4. [General Patterns and Anti-Patterns](#general-patterns-and-anti-patterns)
+4. [General Patterns and Anti-patterns](#general-patterns-and-anti-patterns)
 
 ## High-level Goals
 
@@ -14,9 +26,7 @@
 4. Think forward – ES6 and Web Components (Angular 2.0).
 5. Know [when to deviate](http://legacy.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds) from the style guide.
 
----
-
-## Directories and Files
+## Directory and File Structure
 
 ### Folder structure
 
@@ -86,7 +96,6 @@ A view, made up of components and unique pieces of UI, that points to a URL. Lik
 
 Services contain Business logic. For example, `$http` abstractions.
 
----
 
 ## Parts of Angular
 
@@ -166,7 +175,6 @@ function nextPage() {
 }
 ```
 
----
 
 ### Directives
 
@@ -340,7 +348,6 @@ angular.module('AdminExpandComponentModule', [])
 - Don't rely on jQuery selectors. Use directives to target elements instead.
 - Don't use jQuery to generate templates or DOM. Use directive templates instead.
 
----
 
 ### Controllers
 
@@ -634,7 +641,6 @@ angular.module('AlertListComponentModule', [])
 
 - Don’t manipulate DOM in your controllers, this will make them harder to test. Use directives instead.
 
----
 
 ### Modules
 
@@ -703,7 +709,6 @@ import {AuthInterceptorModule} from '../services/auth-interceptor/auth-intercept
 import {OrganisationIdInterceptorModule} from '../services/organisation-id-interceptor/organisation-id-interceptor';
 ```
 
----
 
 ### Templates
 
@@ -724,7 +729,6 @@ _Why_: Avoids unnecessary expensive `$watch`ers.
 - Don’t use `ngInit` – use controllers instead.
 - Don’t use `<div ng-controller="Controller">` syntax. Use directives instead. 
 
----
 
 ## General Patterns and Anti-Patterns
 
@@ -801,7 +805,7 @@ angular.element(document).ready(function() {
 });
 ```
 
-### Anti-Patterns
+### Anti-patterns
 
 #### Don’t use the `$` name space in property names (e.g. `$scope.$isActive = true`).
 
