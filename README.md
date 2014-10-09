@@ -1,6 +1,12 @@
 # Angular Style Guide
 
-## High Level Goals
+## Table of Contents
+1. [High-level Goals](#high-level-goals)
+2. [Directory and File Structure](#directory-and-file-structure)
+3. [Parts of Angular](#parts-of-angular)
+4. [General Patterns and Anti-Patterns](#general-patterns-and-anti-patterns)
+
+## High-level Goals
 
 1. Prioritise readability.
 2. Be explicit, not implicit.
@@ -10,7 +16,7 @@
 
 ---
 
-## Directories & Files
+## Directories and Files
 
 ### Folder structure
 
@@ -74,7 +80,7 @@ Configures Providers. For example, `$locationProvider.html5Mode(true);`.
 
 ### Routes
 
-A view that points to a URL. Like components, each route contains all the HTML, CSS, JavaScript, and other dependencies needed to render itself.
+A view, made up of components and unique pieces of UI, that points to a URL. Like components, each route contains all the HTML, CSS, JavaScript, and other dependencies needed to render itself.
 
 ### Services
 
