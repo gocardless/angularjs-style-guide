@@ -68,6 +68,14 @@ Keep spec files in the same folder as the code being tested.
 
 Components are encapsulated DOM components. Each component contains all the HTML, CSS, JavaScript, and other dependencies needed to render itself.
 
+### Routes
+
+A view, made up of components and unique pieces of UI, that points to a URL. Like components, each route contains all the HTML, CSS, JavaScript, and other dependencies needed to render itself.
+
+### Services
+
+Services contain Business logic. For example, `$http` abstractions.
+
 ### Config
 
 Configures Providers. For example, `$locationProvider.html5Mode(true);`.
@@ -79,14 +87,6 @@ Configures Providers. For example, `$locationProvider.html5Mode(true);`.
 ### Helpers
 
 [Pure functions](http://en.wikipedia.org/wiki/Pure_function). For example, a `currencyFilter` might take in a number and format it for a certain currency. Helpers take input and return output without having any side effects.
-
-### Routes
-
-A view, made up of components and unique pieces of UI, that points to a URL. Like components, each route contains all the HTML, CSS, JavaScript, and other dependencies needed to render itself.
-
-### Services
-
-Services contain Business logic. For example, `$http` abstractions.
 
 
 ## Parts of Angular
