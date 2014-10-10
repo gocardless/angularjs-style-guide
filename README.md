@@ -1,9 +1,5 @@
 # Angular Style Guide
 
-## Introduction
-
-This is the style guide we use for AngularJS internally at GoCardless.
-
 ## Table of Contents
 1. [High-level Goals](#high-level-goals)
 2. [Directory and File Structure](#directory-and-file-structure)
