@@ -2,15 +2,7 @@
 
 ## Introduction
 
-This style guide addresses four areas: High-level Goals; Directory and File Structure; Parts of Angular; and General Patterns and Anti-patterns.
-
-High-level Goals are those that guide low-level decision making.
-
-Directory and File Structure addresses the way we organise our code and why.
-
-Parts of Angular addresses the core parts of AngularJS — routes, directives, controllers, modules, and templates.
-
-General Patterns and Anti-patterns addresses those that do not pertain to a specific part, but instead to the application at large.
+This is the style guide we use for AngularJS internally at GoCardless.
 
 ## Table of Contents
 1. [High-level Goals](#high-level-goals)
@@ -20,6 +12,8 @@ General Patterns and Anti-patterns addresses those that do not pertain to a spec
 
 ## High-level Goals
 
+The principles we use to guide low-level decision making are:
+
 1. Prioritise readability.
 2. Be explicit, not implicit.
 3. Favour composability over inheritance.
@@ -27,6 +21,8 @@ General Patterns and Anti-patterns addresses those that do not pertain to a spec
 5. Know [when to deviate](http://legacy.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds) from the style guide.
 
 ## Directory and File Structure
+
+We organise our code as follows:
 
 ### Folder structure
 
@@ -98,6 +94,8 @@ Services contain Business logic. For example, `$http` abstractions.
 
 
 ## Parts of Angular
+
+Rules for using each of the core parts of AngularJS (routes, directives, controllers, modules, and templates).
 
 ### Routes
 
@@ -314,7 +312,7 @@ angular.module('AdminExpandComponentModule', [])
           }
 
           $window.document.addEventListener('click', expand);
-    
+
           scope.$on('$destroy', function onAdminExpandDestroy() {
             $window.document.removeEventListener('click', expand);
           });
@@ -483,7 +481,7 @@ angular.module('OrganisationRolesNewControllerModule', [])
       var ctrl = this;
 
       ctrl.permissions = permissions;
-      
+
       ctrl.setAllPermissions = function setAllPermissions(access) {
         ctrl.form.permissions.forEach(function(permission) {
           permission.access = access;
@@ -727,10 +725,12 @@ _Why_: Avoids unnecessary expensive `$watch`ers.
 #### Anti-Patterns
 
 - Don’t use `ngInit` – use controllers instead.
-- Don’t use `<div ng-controller="Controller">` syntax. Use directives instead. 
+- Don’t use `<div ng-controller="Controller">` syntax. Use directives instead.
 
 
 ## General Patterns and Anti-Patterns
+
+Rules that pertain to our application at large, not a specific part of Angular.
 
 ### Patterns
 
