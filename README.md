@@ -23,6 +23,7 @@ The principles we use to guide low-level decision making are:
  
   - _Why_: SystemJS is an ES6 module loader that enables us to load assets in development and transpile ES6 to ES5 in production.
 
+
   ```js
    import {DialogControllerModule} from './dialog.controller'; 
    import template from './dialog.template.html!text';
@@ -40,7 +41,7 @@ The principles we use to guide low-level decision making are:
 
   - _Why_: ui-router replaces Angular’s ngRoute module, and is built around states instead of URL routes, enabling nested views. Our use of `$stateProvider` could be replaced by `$routeProvider`.
 
-_Note_: We plan to write about the third-party tools we use at GoCardless. We will provide a link when it’s done.
+_Note_: We plan to write about the third-party tools we use at GoCardless, and will provide a link when we do.
 
 ## Directory and File Structure
 
