@@ -2,6 +2,7 @@
 
 ## Table of Contents
 1. [High-level Goals](#high-level-goals)
+2. [Third-party Dependencies](#third-party-dependencies)
 2. [Directory and File Structure](#directory-and-file-structure)
 3. [Parts of Angular](#parts-of-angular)
 4. [General Patterns and Anti-patterns](#general-patterns-and-anti-patterns)
@@ -15,6 +16,31 @@ The principles we use to guide low-level decision making are:
 3. Favour composability over inheritance.
 4. Think forward – ES6 and Web Components (Angular 2.0).
 5. Know [when to deviate](http://legacy.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds) from the style guide.
+
+## Third-party Dependencies
+
+1. [SystemJS](https://github.com/systemjs/systemjs)
+ 
+  - _Why_: SystemJS is an ES6 module loader that enables us to load assets in development and transpile ES6 to ES5 in production.
+
+  ```js
+   import {DialogControllerModule} from './dialog.controller'; 
+   import template from './dialog.template.html!text';
+  ```
+
+2. [Traceur](https://github.com/google/traceur-compiler)
+
+  - _Why_: Traceur is the transpiler used by SystemJS.
+
+3. [lodash](https://github.com/lodash/lodash)
+
+  - _Why_: lodash is a utility library we use throughout our application. Our use of `_.extend` could be replaced by Angular’s built in method `angular.extend`.
+
+4. [ui-router](https://github.com/angular-ui/ui-router/wiki)
+
+  - _Why_: ui-router replaces Angular’s ngRoute module, and is built around states instead of URL routes, enabling nested views. Our use of `$stateProvider` could be replaced by `$routeProvider`.
+
+_Note_: We plan to write about the third-party tools we use at GoCardless. We will provide a link when it’s done.
 
 ## Directory and File Structure
 
@@ -97,7 +123,7 @@ Rules for using each of the core parts of AngularJS (routes, directives, control
 
 #### Use resolvers to inject data.
 
-_Why_: The page is rendered only when all data is available, which means you don't get any views being rendered without data.
+_Why_: The page is rendered only when all data is available. This means views are only rendered once all the required data is available, and you avoid the user seeing any empty views whilst the data is loading.
 
 ```js
 // Recommended
@@ -815,10 +841,10 @@ _Why_: You should `$scope.$apply()` as close to the asynchronous event binding a
 
 We referred to lots of resources during the creation of this styleguide, including:
 
-- [Todd Motto's styleguide](https://github.com/toddmotto/angularjs-styleguide)
-- [John Papa's styleguide](https://github.com/johnpapa/angularjs-styleguide)
-- [Minko Gechev's styleguide](https://github.com/mgechev/angularjs-style-guide)
+- [Todd Motto’s styleguide](https://github.com/toddmotto/angularjs-styleguide)
+- [John Papa’s styleguide](https://github.com/johnpapa/angularjs-styleguide)
+- [Minko Gechev’s styleguide](https://github.com/mgechev/angularjs-style-guide)
 - [Google AngularJS and Closure styleguide](http://google-styleguide.googlecode.com/svn/trunk/angularjs-google-style.html)
 - [The Angular.js GitHub wiki](https://github.com/angular/angular.js/wiki)
-- [Digging into Angular's "Controller as" syntax, by Todd Motto](http://toddmotto.com/digging-into-angulars-controller-as-syntax/)
+- [Digging into Angular’s “Controller as” syntax, by Todd Motto](http://toddmotto.com/digging-into-angulars-controller-as-syntax/)
 - [Python PEP 8 Styleguide](http://legacy.python.org/dev/peps/pep-0008/)
