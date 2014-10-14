@@ -178,15 +178,16 @@ _Why_: Separates responsibility: element directives add content; attribute direc
 
 ```html
 <!-- Recommended -->
-<alert message="Error" />
+<alert message="Error"></alert>
 <!-- Replaced with: -->
-<div class="alert">
-  <span class="alert__message">Error</span>
-</div>
+<alert message="Error" class="ng-isolate-scope">
+  <div class="alert">
+    <span class="alert__message">Error</span>
+  </div>
+</alert>
 
 <!-- Avoid -->
-<p alert message="Error">
-</p>
+<p alert message="Error"></p>
 <!-- Replaced with: -->
 <p alert message="Error">
   <div class="alert">
@@ -268,7 +269,6 @@ angular.module('AlertListComponentModule', [])
         controllerAs: 'ctrl',
         bindToController: true,
         template: template,
-        replace: true,
         scope: {}
       };
     }
@@ -282,7 +282,6 @@ angular.module('AlertListComponentModule', [])
         restrict: 'E',
         controller: 'AlertListController',
         template: template,
-        replace: true,
         scope: {}
       };
     }
@@ -377,7 +376,6 @@ angular.module('AlertListComponentModule', [])
         controllerAs: 'ctrl',
         bindToController: true,
         template: template,
-        replace: true,
         scope: {}
       };
     }
@@ -391,7 +389,6 @@ angular.module('AlertListComponentModule', [])
         restrict: 'E',
         controller: 'AlertListController',
         template: template,
-        replace: true,
         scope: {}
       };
     }
@@ -617,7 +614,6 @@ angular.module('AlertListComponentModule', [])
         controllerAs: 'ctrl',
         bindToController: true,
         template: template,
-        replace: true,
         scope: {}
       };
     }
