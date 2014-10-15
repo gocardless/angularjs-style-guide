@@ -803,11 +803,15 @@ Always create a new scope to pass into the controller:
 
 ```js
 var scope;
+var organisation = {
+  name: 'GoCardless'
+};
+
 beforeEach(inject(function($injector, $controller) {
   scope = $injector.get('$rootScope').$new();
   $controller('OrganisationController as ctrl', {
     $scope: scope,
-    …
+    organisation: organisation
   });
 }));
 ```
