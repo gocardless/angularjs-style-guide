@@ -37,7 +37,7 @@ The principles we use to guide low-level decision making are:
 
   - _Why_: lodash is a utility library we use throughout our application. Our use of `_.extend` could be replaced by Angular’s built in method `angular.extend`.
 
-4. [ui-router](https://github.com/angular-ui/ui-router/wiki)
+4. [AngularUI Router](https://github.com/angular-ui/ui-router/wiki)
 
   - _Why_: ui-router replaces Angular’s ngRoute module, and is built around states instead of URL routes, enabling nested views. Our use of `$stateProvider` could be replaced by `$routeProvider`.
 
