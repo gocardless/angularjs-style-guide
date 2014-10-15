@@ -817,7 +817,7 @@ beforeEach(inject(function($injector, $controller) {
 When stubbing an API request using `$httpBackend`, always respond with a correctly formatted object. These responses should be saved individually as `.json` files and imported using the SystemJS JSON plugin:
 
 ```js
-import updateFixture from 'app/services/roles/update.fixture.json!json
+import updateFixture from 'app/services/roles/update.fixture.json!json';
 
 $httpBackend.expectPUT('someurl.com').respond(201, updateFixture);
 ```
