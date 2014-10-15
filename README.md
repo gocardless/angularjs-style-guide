@@ -838,6 +838,81 @@ _Why_: Using DI makes testing and refactoring easier.
 
 _Why_: You should `$scope.$apply()` as close to the asynchronous event binding as possible.
 
+### Testing
+
+Our applications are covered by two different types of test:
+- unit tests, which test individual components by asserting that they behave as expected.
+- End to End, or E2E, tests, which load up the application in a browser and interact with it as if a user would, asserting the application behaves expectedly.
+
+To write our tests we use [Jasmine BDD](http://jasmine.github.io/2.0/introduction.html) and [ngMock](https://docs.angularjs.org/api/ngMock).
+
+#### Unit Testing
+
+Every component should have a comprehensive set of unit tests.
+
+##### Structure of Unit Tests
+
+Tests should be grouped into logical blocks using Jasmine's `describe` function. Tests for a function should all be contained within a `describe` block, and `describe` blocks should also be used to describe different scenarios, or _contexts_:
+
+```js
+describe('#update', function() {
+  describe('when the data is valid', function() {
+    it('shows the success message', function() {…});
+  });
+
+  describe('when the data is invalid', function() {
+    it('shows errors', function() {…});
+  });
+});
+```
+
+##### Dependencies
+
+Each component should have its dependencies stubbed in each test.
+
+Inject the dependencies and the components being tested in a `beforeEach` function. This encapsulates each test's state, ensuring that they are independent, making them easier to reason about. Tests should never depend on being run in a specific order.
+
+```js
+var SomeService;
+
+beforeEach(inject(function($injector) {
+  SomeService = $injector.get('SomeService');
+}));
+```
+
+##### Controllers
+
+When injecting controllers for a test, use the `controller as` syntax:
+
+```js
+beforeEach(inject(function($injector, $controller) {
+  $controller('OrganisationController as ctrl', {…});
+}));
+```
+
+Always create a new scope to pass into the controller:
+
+```js
+var scope;
+beforeEach(inject(function($injector, $controller) {
+  scope = $injector.get('$rootScope').$new();
+  $controller('OrganisationController as ctrl', {
+    $scope: scope,
+    …
+  });
+}));
+```
+
+##### Fixtures
+
+When stubbing an API request using `$httpBackend`, always respond with a correctly formatted object. These responses should be saved individually as `.json` files and imported using the SystemJS JSON plugin:
+
+```js
+import updateFixture from 'app/services/roles/update.fixture.json!json
+
+$httpBackend.expectPUT('someurl.com').respond(201, updateFixture);
+```
+
 ## Credits
 
 We referred to lots of resources during the creation of this styleguide, including:
