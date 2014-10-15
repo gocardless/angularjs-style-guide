@@ -33,7 +33,7 @@ The principles we use to guide low-level decision making are:
 
   - _Why_: Traceur is the transpiler used by SystemJS.
 
-3. [lodash](https://github.com/lodash/lodash)
+3. [Lo-Dash](https://github.com/lodash/lodash)
 
   - _Why_: lodash is a utility library we use throughout our application. Our use of `_.extend` could be replaced by Angular’s built in method `angular.extend`.
 
