@@ -22,7 +22,7 @@ The principles we use to guide low-level decision making are:
 
 1. [SystemJS](https://github.com/systemjs/systemjs)
  
-  - _Why_: SystemJS is an ES6 module loadher that enables us to load assets in development and transpile ES6 to ES5 in production.
+  - _Why_: SystemJS is an ES6 module loader that enables us to load assets in development and transpile ES6 to ES5 in production.
 
 
   ```js
