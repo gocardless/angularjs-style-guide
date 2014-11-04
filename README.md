@@ -22,7 +22,7 @@ The principles we use to guide low-level decision making are:
 
 1. [SystemJS](https://github.com/systemjs/systemjs)
  
-  - _Why_: SystemJS is an ES6 module loader that enables us to load assets in development and transpile ES6 to ES5 in production.
+  - _Why_: SystemJS is an ES6 module loadher that enables us to load assets in development and transpile ES6 to ES5 in production.
 
 
   ```js
@@ -202,7 +202,7 @@ function nextPage() {
 
 #### Directive names must only contain `a-z` and at least one dash (`-`).
 
-_Why_: Differentiates native elements and attributes from [http://www.html5rocks.com/en/tutorials/webcomponents/customelements/](custom elements) and attributes.
+_Why_: Differentiates native elements and attributes from [custom elements](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) and attributes.
 
 ```html
 <!-- Recommended -->
@@ -676,9 +676,9 @@ angular.module('alertListComponentModule', [])
 
 ### Modules
 
-#### Name a module using `lowerCamelCase` with a namespace.
+#### Name a module using `lowerCamelCase` and append `Module`.
 
-_Why_: Differentiates module names from constructors and service objects.
+_Why_: A module name should be mapped to a file and clearly differentiated from constructors and service objects.
 
 ```js
 // Recommended
