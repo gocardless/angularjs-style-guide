@@ -26,7 +26,7 @@ The principles we use to guide low-level decision making are:
 
 
   ```js
-   import {DialogControllerModule} from './dialog.controller'; 
+   import {dialogControllerModule} from './dialog.controller'; 
    import template from './dialog.template.html!text';
   ```
 
@@ -200,26 +200,40 @@ function nextPage() {
 
 ### Directives
 
+#### Directive names must only contain `a-z` and at least one dash (`-`).
+
+_Why_: [Custom elements](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) must have a dash (namespace) to differentiate them from native elements and prevent future component collisions.
+
+```html
+<!-- Recommended -->
+<dialog-box></dialog-box>
+<button click-toggle="isActive"></button>
+
+<!-- Avoid -->
+<dialog></dialog>
+<button toggle="isActive"></button>
+```
+
 #### Use element directives when content is injected, else use attribute directives.
 
 _Why_: Separates responsibility: element directives add content; attribute directives add behaviour; class attributes add style.
 
 ```html
 <!-- Recommended -->
-<alert message="Error"></alert>
+<alert-box message="Error"></alert-box>
 <!-- Replaced with: -->
-<alert message="Error" class="ng-isolate-scope">
-  <div class="alert">
-    <span class="alert__message">Error</span>
+<alert-box message="Error" class="ng-isolate-scope">
+  <div class="alert-box">
+    <span class="alert-box__message">Error</span>
   </div>
-</alert>
+</alert-box>
 
 <!-- Avoid -->
-<p alert message="Error"></p>
+<p alert-box message="Error"></p>
 <!-- Replaced with: -->
-<p alert message="Error">
-  <div class="alert">
-    <span class="alert__message">Error</span>
+<p alert-box message="Error">
+  <div class="alert-box">
+    <span class="alert-box__message">Error</span>
   </div>
 </p>
 ```
@@ -238,7 +252,7 @@ _Why_: Using an isolate scope forces you to expose an API by giving the componen
 
 ```js
 // Recommended
-angular.module('AlertListComponentModule', [])
+angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
@@ -249,7 +263,7 @@ angular.module('AlertListComponentModule', [])
   ]);
 
 // Avoid
-angular.module('AlertListComponentModule', [])
+angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
@@ -261,7 +275,7 @@ angular.module('AlertListComponentModule', [])
 
 ```js
 // Recommended
-angular.module('AlertListComponentModule', [])
+angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
@@ -272,7 +286,7 @@ angular.module('AlertListComponentModule', [])
   ]);
 
 // Avoid
-angular.module('AlertListComponentModule', [])
+angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
@@ -288,7 +302,7 @@ _Why_: It explicitly shows what variables are shared via the controller.
 
 ```js
 // Recommended
-angular.module('AlertListComponentModule', [])
+angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
@@ -303,7 +317,7 @@ angular.module('AlertListComponentModule', [])
   ]);
 
 // Avoid
-angular.module('AlertListComponentModule', [])
+angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
@@ -322,7 +336,7 @@ _Why_: It avoids memory leaks and duplicate event listeners being bound when the
 
 ```js
 // Recommended
-angular.module('AdminExpandComponentModule', [])
+angular.module('adminExpandComponentModule', [])
   .directive('adminExpand', [
     '$window',
     function adminExpand($window) {
@@ -345,7 +359,7 @@ angular.module('AdminExpandComponentModule', [])
   ]);
 
 // Avoid
-angular.module('AdminExpandComponentModule', [])
+angular.module('adminExpandComponentModule', [])
   .directive('adminExpand', [
     '$window',
     function adminExpand($window) {
@@ -368,7 +382,7 @@ angular.module('AdminExpandComponentModule', [])
 
 - Don't rely on jQuery selectors. Use directives to target elements instead.
 - Don't use jQuery to generate templates or DOM. Use directive templates instead.
-
+- Don't prefix directive names with `x-`, `polymer-`, `ng-`.
 
 ### Controllers
 
@@ -395,7 +409,7 @@ $stateProvider.state('authRequired.customers.show', {
 
 ```js
 // Recommended
-angular.module('AlertListComponentModule', [])
+angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
@@ -410,7 +424,7 @@ angular.module('AlertListComponentModule', [])
   ]);
 
 // Avoid
-angular.module('AlertListComponentModule', [])
+angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
@@ -431,7 +445,7 @@ _Why_:
 
 ```js
 // Recommended
-angular.module('CustomersShowControllerModule', [])
+angular.module('customersShowControllerModule', [])
   .controller('CustomersShowController', [
     'customer', 'payments', 'mandates',
     function CustomersShowController(customer, payments, mandates){
@@ -446,7 +460,7 @@ angular.module('CustomersShowControllerModule', [])
   ]);
 
 // Avoid
-angular.module('CustomersShowControllerModule', [])
+angular.module('customersShowControllerModule', [])
   .controller('CustomersShowController', [
     'Customers', 'Payments', 'Mandates',
     function CustomersShowController(Customers, Payments, Mandates){
@@ -475,7 +489,7 @@ _Why_: What is being exported is clear and always done in one place, at the bott
 
 ```js
 // Recommended
-angular.module('OrganisationRolesNewControllerModule', [])
+angular.module('organisationRolesNewControllerModule', [])
   .controller('OrganisationRolesNewController', [
     'permissions',
     function CustomersShowController(permissions){
@@ -495,7 +509,7 @@ angular.module('OrganisationRolesNewControllerModule', [])
   ]);
 
 // Avoid
-angular.module('OrganisationRolesNewControllerModule', [])
+angular.module('organisationRolesNewControllerModule', [])
   .controller('OrganisationRolesNewController', [
     'permissions',
     function CustomersShowController(permissions){
@@ -518,7 +532,7 @@ _Why_: Adding unused properties to the digest cycle is expensive.
 
 ```js
 // Recommended
-angular.module('WebhooksIndexControllerModule', [])
+angular.module('webhooksIndexControllerModule', [])
   .controller('WebhooksIndexController', [
     'TestWebhooks', 'AlertList', 'webhooks'
     function WebhooksIndexController(TestWebhooks, AlertList, webhooks) {
@@ -546,7 +560,7 @@ angular.module('WebhooksIndexControllerModule', [])
   ]);
 
 // Avoid
-angular.module('WebhooksIndexControllerModule', [])
+angular.module('webhooksIndexControllerModule', [])
   .controller('WebhooksIndexController', [
     'TestWebhooks', 'AlertList', 'webhooks'
     function WebhooksIndexController(TestWebhooks, AlertList, webhooks) {
@@ -584,7 +598,7 @@ _Why_:
 
 ```js
 // Recommended
-angular.module('WebhooksControllerModule', [])
+angular.module('webhooksControllerModule', [])
 .controller('WebhooksController', [
   'TestWebhooks',
   function WebhooksController(TestWebhooks) {
@@ -606,7 +620,7 @@ angular.module('WebhooksControllerModule', [])
 ]);
 
 // Avoid
-angular.module('WebhooksControllerModule', [])
+angular.module('webhooksControllerModule', [])
 .controller('WebhooksController', [
   '$http',
   function WebhooksController($http) {
@@ -633,7 +647,7 @@ _Why_: Allows reuse of controllers and encourages component encapsulation.
 
 ```js
 // Recommended
-angular.module('AlertListComponentModule', [])
+angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
@@ -662,6 +676,20 @@ angular.module('AlertListComponentModule', [])
 
 ### Modules
 
+#### Name a module using `lowerCamelCase` and append `Module`.
+
+_Why_: A module name should be mapped to a file and clearly differentiated from constructors and service objects.
+
+```js
+// Recommended
+angular.module('usersPasswordEditControllerModule', [])
+  .controller('UsersPasswordEditController', []);
+
+// Avoid
+angular.module('UsersPasswordEditControllerModule', [])
+  .controller('UsersPasswordEditController', []);
+```
+
 #### Create one module per file and don’t alter a module other than where it is defined.
 
 _Why_:
@@ -671,7 +699,7 @@ _Why_:
 
 ```js
 // Recommended
-angular.module('UsersPasswordEditControllerModule', [])
+angular.module('usersPasswordEditControllerModule', [])
   .controller('UsersPasswordEditController', []);
 
 // Avoid
@@ -687,25 +715,25 @@ _Why_:
 
 ```js
 // Recommended
-import {PasswordResetTokensModule} from 'app/services/password-reset-tokens/password-reset-tokens';
-import {SessionModule} from 'app/services/session/session';
-import {AlertListModule} from 'app/components/alert-list/alert-list';
+import {passwordResetTokensModule} from 'app/services/password-reset-tokens/password-reset-tokens';
+import {sessionModule} from 'app/services/session/session';
+import {alertListModule} from 'app/components/alert-list/alert-list';
 
-export var UsersPasswordEditControllerModule = angular.module('UsersPasswordEditControllerModule', [
-  PasswordResetTokensModule.name,
-  SessionModule.name,
-  AlertListModule.name
+export var usersPasswordEditControllerModule = angular.module('usersPasswordEditControllerModule', [
+  passwordResetTokensModule.name,
+  sessionModule.name,
+  alertListModule.name
 ]);
 
 // Avoid
-import {PasswordResetTokensModule} from 'app/services/password-reset-tokens/password-reset-tokens';
-import {SessionModule} from 'app/services/session/session';
-import {AlertListModule} from 'app/components/alert-list/alert-list';
+import {passwordResetTokensModule} from 'app/services/password-reset-tokens/password-reset-tokens';
+import {sessionModule} from 'app/services/session/session';
+import {alertListModule} from 'app/components/alert-list/alert-list';
 
-export var UsersPasswordEditControllerModule = angular.module('UsersPasswordEditControllerModule', [
-  'PasswordResetTokensModule',
-  'SessionModule',
-  'AlertListModule'
+export var usersPasswordEditControllerModule = angular.module('usersPasswordEditControllerModule', [
+  'passwordResetTokensModule',
+  'sessionModule',
+  'alertListModule'
 ]);
 ```
 
@@ -718,13 +746,13 @@ _Why_: Makes it easier to edit directories.
 
 // Recommended
 import {API_URL} from 'app/constants/api-url.constant';
-import {AuthInterceptorModule} from 'app/services/auth-interceptor/auth-interceptor';
-import {OrganisationIdInterceptorModule} from 'app/services/organisation-id-interceptor/organisation-id-interceptor';
+import {authInterceptorModule} from 'app/services/auth-interceptor/auth-interceptor';
+import {organisationIdInterceptorModule} from 'app/services/organisation-id-interceptor/organisation-id-interceptor';
 
 // Avoid
 import {API_URL} from '../../constants/api-url.constant';
-import {AuthInterceptorModule} from '../services/auth-interceptor/auth-interceptor';
-import {OrganisationIdInterceptorModule} from '../services/organisation-id-interceptor/organisation-id-interceptor';
+import {authInterceptorModule} from '../services/auth-interceptor/auth-interceptor';
+import {organisationIdInterceptorModule} from '../services/organisation-id-interceptor/organisation-id-interceptor';
 ```
 
 
@@ -853,7 +881,7 @@ error if the array (or `$inject`) syntax is not used.
 
 ```js
 // Recommended
-angular.module('CreditorsShowControllerModule', [])
+angular.module('creditorsShowControllerModule', [])
   .controller('CreditorsShowController', [
     'creditor', 'payments', 'payouts',
     function CreditorsShowController(creditor, payments, payouts) {
@@ -868,7 +896,7 @@ angular.module('CreditorsShowControllerModule', [])
   ]);
 
 // Avoid
-angular.module('CreditorsShowControllerModule', [])
+angular.module('creditorsShowControllerModule', [])
   .controller('CreditorsShowController',
     function CreditorsShowController(creditor, payments, payouts) {
       var ctrl = this;
@@ -883,22 +911,22 @@ angular.module('CreditorsShowControllerModule', [])
 
 ```js
 // Recommended
-import {MainModule} from './main';
+import {mainModule} from './main';
 
 angular.element(document).ready(function() {
   angular.bootstrap(document.querySelector('[data-main-app]'), [
-    MainModule.name
+    mainModule.name
   ], {
     strictDi: true
   });
 });
 
 // Avoid
-import {MainModule} from './main';
+import {mainModule} from './main';
 
 angular.element(document).ready(function() {
   angular.bootstrap(document.querySelector('[data-main-app]'), [
-    MainModule.name
+    mainModule.name
   ]);
 });
 ```
