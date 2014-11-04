@@ -202,7 +202,7 @@ function nextPage() {
 
 #### Directive names must only contain `a-z` and at least one dash (`-`).
 
-_Why_: Differentiates native elements and attributes from [custom elements](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) and attributes.
+_Why_: [Custom elements](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/) must have a dash (namespace) to differentiate them from native elements and prevent future component collisions.
 
 ```html
 <!-- Recommended -->
