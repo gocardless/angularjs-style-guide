@@ -462,8 +462,8 @@ angular.module('customersShowControllerModule', [])
 // Avoid
 angular.module('customersShowControllerModule', [])
   .controller('CustomersShowController', [
-    'Customers', 'Payments', 'Mandates',
-    function CustomersShowController(Customers, Payments, Mandates){
+    'Customers', 'Payments', 'Mandates', '$stateParams',
+    function CustomersShowController(Customers, Payments, Mandates, $stateParams){
       var ctrl = this;
 
       Customers.findOne({
