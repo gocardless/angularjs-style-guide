@@ -46,7 +46,7 @@ The principles we use to guide low-level decision making are:
 
   - _Why_: ui-router replaces Angular’s ngRoute module, and is built around states instead of URL routes, enabling nested views. Our use of `$stateProvider` could be replaced by `$routeProvider`.
 
-_Note_: For a complete setup see our [Example ES6 Application Scaffold](#example-es6-application-scaffold).
+_Note_: For a complete setup see our [Example ES6 Application Scaffold](https://github.com/gocardless/es6-angularjs).
 
 ## Directory and File Structure
 
