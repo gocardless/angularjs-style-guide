@@ -18,6 +18,10 @@ The principles we use to guide low-level decision making are:
 4. Think forward – ES6 and Web Components (Angular 2.0).
 5. Know [when to deviate](http://legacy.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds) from the style guide.
 
+## Example ES6 Application Scaffold
+
+[ES6 + AngularJS Application](https://github.com/gocardless/es6-angularjs)
+
 ## Third-party Dependencies
 
 1. [SystemJS](https://github.com/systemjs/systemjs)
@@ -42,7 +46,7 @@ The principles we use to guide low-level decision making are:
 
   - _Why_: ui-router replaces Angular’s ngRoute module, and is built around states instead of URL routes, enabling nested views. Our use of `$stateProvider` could be replaced by `$routeProvider`.
 
-_Note_: We plan to write about the third-party tools we use at GoCardless, and will provide a link when we do.
+_Note_: For a complete setup see our [Example ES6 Application Scaffold](#example-es6-application-scaffold).
 
 ## Directory and File Structure
 
