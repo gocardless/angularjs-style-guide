@@ -250,9 +250,9 @@ _Why_: Separates responsibility: element directives add content; attribute direc
 <prevent-default event="click">Submit</prevent-default>
 ```
 
-#### Use an isolate scope for element directives. Use inherited scope for attribute directives.
+#### Use an isolate scope for element directives. Share scope for attribute directives.
 
-_Why_: Using an isolate scope forces you to expose an API by giving the component all the data it needs. This increases reusability and testability. Attribute directives should not have an isolate scope because doing so overwrites the current scope.
+_Why_: Using an isolate scope forces you to expose an API by giving the component all the data it needs. This increases reusability and testability. When using a shared scope for attribute directives you should not write to it or rely on any existing data. Attribute directives should not have an isolate scope because doing so overwrites the current scope.
 
 ```js
 // Recommended
@@ -283,8 +283,7 @@ angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
-        restrict: 'A',
-        scope: true
+        restrict: 'A'
       };
     }
   ]);
@@ -294,10 +293,21 @@ angular.module('alertListComponentModule', [])
   .directive('alertList', [
     function alertListDirective() {
       return {
-        restrict: 'A'
+        restrict: 'A',
+        scope: {}
       };
     }
   ]);
+
+angular.module('alertListComponentModule', [])
+.directive('alertList', [
+  function alertListDirective() {
+    return {
+      restrict: 'A',
+      scope: true
+    };
+  }
+]);
 ```
 
 #### When using isolate-scope properties, always `bindToController`.
