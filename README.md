@@ -688,6 +688,71 @@ angular.module('alertListComponentModule', [])
 - Don’t manipulate DOM in your controllers, this will make them harder to test. Use directives instead.
 
 
+### Services and Factories
+
+#### Treat Service objects like a Class with static methods; don't export services as a single function
+
+_Why_: easier to see at the definition site and the call site exactly what function the service provides.
+
+```js
+// Recommend
+angular.module('buildCSVModule', []).factory('BuildCSV', function buildCVS() {
+  function build() {
+    // ...
+  }
+
+  return {
+    build: build,
+  }
+});
+
+// Avoid
+angular.module('buildCSVModule', []).factory('BuildCSV', function buildCSV() {
+  function build() {
+    // ...
+  }
+
+  return build;
+});
+```
+
+#### Services that take in data and manipulate it should never mutate the original object and return the new object
+
+__Why__: Avoiding mutation in service objects makes it possible to reason about them from their call site without knowing what they do internally.
+
+```js
+// Recommend
+var events = [...];
+events = EventPresenterService.present(events);
+
+// Avoid
+var events = [...];
+EventPresenterService.present(events);
+// events has been mutated
+```
+
+#### Prefer [ImmutableJS](https://github.com/facebook/immutable-js) when creating services that manipulate data
+
+Use `fromJS` to convert a JS object into an Immutable type, and `toJS` at the end to convert back.
+
+__Why__: ImmutableJS is a fantastic library for taking data and manipulating it without ever mutating.
+
+```js
+// Recommend
+angular.module('eventPresenterModule', []).factory('EventPresenterService', function eventPresenterService() {
+  function present(events) {
+    return Immutable.fromJS(events).map(function(event) {
+      event.set('some_data', true);
+    }).map(function(event) {
+      ...
+    }).toJS();
+  }
+
+  return {
+    present: present,
+  }
+});
+```
 ### Modules
 
 #### Name a module using `lowerCamelCase` and append `Module`.
