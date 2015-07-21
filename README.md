@@ -36,7 +36,7 @@ The principles we use to guide low-level decision making are:
 
 2. [Traceur](https://github.com/google/traceur-compiler)
 
-  - _Why_: Traceur is the transpiler used by SystemJS.
+  - _Why_: Traceur is a transpiler supported by SystemJS. It lets us use ECMAScript 6 features before they are implemented in browsers.
 
 3. [Lo-Dash](https://github.com/lodash/lodash)
 
@@ -114,7 +114,12 @@ Configures Providers. For example, `$locationProvider.html5Mode(true);`.
 
 ### Constants
 
-[Constant variables](http://en.wikipedia.org/wiki/Constant_(computer_programming)). For example, `export var API = 'https://api.gocardless.com';`. Although JavaScript does not yet support constants, naming a variable in all uppercase is a convention that denotes the variable should not be mutated.
+Although JavaScript does not yet support constants, we run our application through Traceur, which supports `const`.
+
+The constant should be named in all uppercase if it's a global constant that will be used across many different functions.
+For example, `export const API_URL = 'https://api.gocardless.com'`.
+
+If the constant is defined within a single function, it should be in regular camelCase.
 
 ### Helpers
 
@@ -161,7 +166,7 @@ $stateProvider.state('customers.show', {
     'Customers',
     '$stateParams',
     function CustomersShowController(Customers, $stateParams) {
-      var ctrl = this;
+      const ctrl = this;
       Customers.findOne({
         params: { id: $stateParams.id }
       }).then(function(customers) {
@@ -179,9 +184,9 @@ _Why_: The current view should be accurately reflected in the URL, which means a
 ```js
 // Recommended
 function nextPage() {
-  var currentOffset = parseInt($stateParams.offset, 10) || 0;
-  var limit = parseInt($stateParams.limit, 10) || 10;
-  var nextOffset = currentOffset + limit;
+  const currentOffset = parseInt($stateParams.offset, 10) || 0;
+  const limit = parseInt($stateParams.limit, 10) || 10;
+  const nextOffset = currentOffset + limit;
   Payments.findAll({
     params: { customers: $stateParams.id, limit: limit, offset: nextOffset }
   });
@@ -189,11 +194,11 @@ function nextPage() {
 
 // Avoid
 // Keeping route state in memory only
-var currentOffset = 0;
-var limit = 10;
+let currentOffset = 0;
+const limit = 10;
 
 function nextPage() {
-  var nextOffset = currentOffset + limit;
+  const nextOffset = currentOffset + limit;
   currentOffset = nextOffset;
   Payments.findAll({
     params: { customers: $stateParams.id, limit: limit, offset: nextOffset }
@@ -463,7 +468,7 @@ angular.module('customersShowControllerModule', [])
   .controller('CustomersShowController', [
     'customer', 'payments', 'mandates',
     function CustomersShowController(customer, payments, mandates){
-      var ctrl = this;
+      const ctrl = this;
 
       _.extend(ctrl, {
         customer: customer,
@@ -478,7 +483,7 @@ angular.module('customersShowControllerModule', [])
   .controller('CustomersShowController', [
     'Customers', 'Payments', 'Mandates', '$stateParams',
     function CustomersShowController(Customers, Payments, Mandates, $stateParams){
-      var ctrl = this;
+      const ctrl = this;
 
       Customers.findOne({
         params: { id: $stateParams.id }
@@ -507,7 +512,7 @@ angular.module('organisationRolesNewControllerModule', [])
   .controller('OrganisationRolesNewController', [
     'permissions',
     function CustomersShowController(permissions){
-      var ctrl = this;
+      const ctrl = this;
 
       function setAllPermissions(access) {
         ctrl.form.permissions.forEach(function(permission) {
@@ -527,7 +532,7 @@ angular.module('organisationRolesNewControllerModule', [])
   .controller('OrganisationRolesNewController', [
     'permissions',
     function CustomersShowController(permissions){
-      var ctrl = this;
+      const ctrl = this;
 
       ctrl.permissions = permissions;
 
@@ -550,7 +555,7 @@ angular.module('webhooksIndexControllerModule', [])
   .controller('WebhooksIndexController', [
     'TestWebhooks', 'AlertList', 'webhooks'
     function WebhooksIndexController(TestWebhooks, AlertList, webhooks) {
-      var ctrl = this;
+      const ctrl = this;
 
       function success() {
         AlertList.success('Your test webhook has been created and will be sent shortly');
@@ -578,7 +583,7 @@ angular.module('webhooksIndexControllerModule', [])
   .controller('WebhooksIndexController', [
     'TestWebhooks', 'AlertList', 'webhooks'
     function WebhooksIndexController(TestWebhooks, AlertList, webhooks) {
-      var ctrl = this;
+      const ctrl = this;
 
       function success() {
         AlertList.success('Your test webhook has been created and will be sent shortly');
@@ -616,7 +621,7 @@ angular.module('webhooksControllerModule', [])
 .controller('WebhooksController', [
   'TestWebhooks',
   function WebhooksController(TestWebhooks) {
-    var ctrl = this;
+    const ctrl = this;
 
     function sendTestWebhook(webhook) {
       TestWebhooks.create({
@@ -638,7 +643,7 @@ angular.module('webhooksControllerModule', [])
 .controller('WebhooksController', [
   '$http',
   function WebhooksController($http) {
-    var ctrl = this;
+    const ctrl = this;
 
     function sendTestWebhook(webhook) {
       $http({
@@ -722,11 +727,11 @@ __Why__: Avoiding mutation in service objects makes it possible to reason about 
 
 ```js
 // Recommend
-var events = [...];
+const events = [...];
 events = EventPresenterService.present(events);
 
 // Avoid
-var events = [...];
+const events = [...];
 EventPresenterService.present(events);
 // events has been mutated
 ```
@@ -798,7 +803,7 @@ import {passwordResetTokensModule} from 'app/services/password-reset-tokens/pass
 import {sessionModule} from 'app/services/session/session';
 import {alertListModule} from 'app/components/alert-list/alert-list';
 
-export var usersPasswordEditControllerModule = angular.module('usersPasswordEditControllerModule', [
+export const usersPasswordEditControllerModule = angular.module('usersPasswordEditControllerModule', [
   passwordResetTokensModule.name,
   sessionModule.name,
   alertListModule.name
@@ -809,7 +814,7 @@ import {passwordResetTokensModule} from 'app/services/password-reset-tokens/pass
 import {sessionModule} from 'app/services/session/session';
 import {alertListModule} from 'app/components/alert-list/alert-list';
 
-export var usersPasswordEditControllerModule = angular.module('usersPasswordEditControllerModule', [
+export const usersPasswordEditControllerModule = angular.module('usersPasswordEditControllerModule', [
   'passwordResetTokensModule',
   'sessionModule',
   'alertListModule'
@@ -889,7 +894,7 @@ Each component should have its dependencies stubbed in each test.
 Inject the dependencies and the components being tested in a `beforeEach` function. This encapsulates each test's state, ensuring that they are independent, making them easier to reason about. Tests should never depend on being run in a specific order.
 
 ```js
-var SomeService;
+let SomeService;
 
 beforeEach(inject(function($injector) {
   SomeService = $injector.get('SomeService');
@@ -909,8 +914,8 @@ beforeEach(inject(function($injector, $controller) {
 Always create a new scope to pass into the controller:
 
 ```js
-var scope;
-var organisation = {
+let scope;
+let organisation = {
   name: 'GoCardless'
 };
 
@@ -964,7 +969,7 @@ angular.module('creditorsShowControllerModule', [])
   .controller('CreditorsShowController', [
     'creditor', 'payments', 'payouts',
     function CreditorsShowController(creditor, payments, payouts) {
-      var ctrl = this;
+      const ctrl = this;
 
       _.extend(ctrl, {
         creditor: creditor,
@@ -978,7 +983,7 @@ angular.module('creditorsShowControllerModule', [])
 angular.module('creditorsShowControllerModule', [])
   .controller('CreditorsShowController',
     function CreditorsShowController(creditor, payments, payouts) {
-      var ctrl = this;
+      const ctrl = this;
 
       _.extend(ctrl, {
         creditor: creditor,
