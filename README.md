@@ -25,12 +25,12 @@ The principles we use to guide low-level decision making are:
 ## Third-party Dependencies
 
 1. [SystemJS](https://github.com/systemjs/systemjs)
- 
+
   - _Why_: SystemJS is an ES6 module loader that enables us to load assets in development and transpile ES6 to ES5 in production.
 
 
   ```js
-   import {dialogControllerModule} from './dialog.controller'; 
+   import {dialogControllerModule} from './dialog.controller';
    import template from './dialog.template.html!text';
   ```
 
@@ -727,7 +727,7 @@ __Why__: Avoiding mutation in service objects makes it possible to reason about 
 
 ```js
 // Recommend
-const events = [...];
+let events = [...];
 events = EventPresenterService.present(events);
 
 // Avoid
