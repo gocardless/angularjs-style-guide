@@ -114,12 +114,10 @@ Configures Providers. For example, `$locationProvider.html5Mode(true);`.
 
 ### Constants
 
-Although JavaScript does not yet support constants, we run our application through Traceur, which supports `const`.
-
-The constant should be named in all uppercase if it's a global constant that will be used across many different functions.
+A constant should be named in all uppercase if it's a global constant that will be used across many different functions.
 For example, `export const API_URL = 'https://api.gocardless.com'`.
 
-If the constant is defined within a single function, it should be in regular camelCase.
+If a constant is defined within a single function, it should be in regular camelCase.
 
 ### Helpers
 
